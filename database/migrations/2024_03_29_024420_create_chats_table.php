@@ -11,20 +11,21 @@ return new class extends Migration
      */
     //Chtbot紀錄
     public function up(): void
-    {
+    {/*
         Schema::create('chats', function (Blueprint $table) {
             $table->uuid("id")->primary();
             //$table->foreignIdFor(EmbedCollection::class)->onDelete('cascade');
             $table->string("title")->nullable();
             $table->timestamps();
         });
+        */
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::dropIfExists('chats');
+    {/*
+        Schema::dropIfExists('chats');*/
     }
 };

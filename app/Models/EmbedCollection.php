@@ -10,7 +10,7 @@ class EmbedCollection extends Model
 {
     use HasFactory;
 
-    public $fillable = ['name', 'meta_data'];
+    public $fillable = ['name', 'file_name'];
     public $incrementing = false;
     public $keyType = "string";
 

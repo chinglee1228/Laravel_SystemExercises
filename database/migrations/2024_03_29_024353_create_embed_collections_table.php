@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('embed_collections', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('embed_collections', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("name");
-            $table->string("meta_data");
+            $table->string("file_name");
             $table->timestamps();
         });
     }
