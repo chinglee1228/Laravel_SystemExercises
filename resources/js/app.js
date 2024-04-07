@@ -3,10 +3,14 @@ import './bootstrap';
 
 const components = {
     loadingDots: `<span class="loading">
-    <span class="animate-pulse  style="background-color: #fff;">....</span>
-    </span>`,
+    <span style="background-color: #fff;"></span>
+    <span style="background-color: #fff;"></span>
+    <span style="background-color: #fff;"></span>
+    </span>
+
+    `,
     thinking:
-        '<span class="animate-pulse text-gray-600 text-sm">回覆中...</span>',
+        `<span class="animate-pulse text-gray-600 text-sm">回覆中...</span>`,
     chat_user: `
     <div class="ml-16 flex justify-end">
         <di class="bg-gray-100 p-3 rounded-md">
@@ -23,14 +27,7 @@ const components = {
     </div>`,
 };
 
-function isUrl(string) {
-    try {
-        new URL(string);
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
+
 
 function getId(length = 6) {
     const characters =
@@ -45,7 +42,7 @@ function getId(length = 6) {
     return result;
 }
 
-async function markdownToHtml(markdownString) {
+async function markdownToHtml(markdownString) {//將 markdown 轉換為 HTML
     const { unified } = await import("unified");
     const markdown = (await import("remark-parse")).default;
     const remark2rehype = (await import("remark-rehype")).default;
@@ -61,27 +58,32 @@ async function markdownToHtml(markdownString) {
 }
 
 function handleSubmitQuestion(form) {
+
     form.addEventListener("submit", (e) => {
         e.preventDefault();//阻止表單默認提交
         const question = e.target.question.value;//提取輸入框的值
-        const token = e.target._token.value;
+        const token = e.target._token.value;//提取 CSRF token
         const btn = document.getElementById("btn-submit-question");
         const messages = document.getElementById("messages");
-        btn.innerHTML = components.loadingDots;
+        btn.innerHTML = components.loadingDots;//顯示發送中
         e.target.question.value = "";//清空輸入框
 
-        messages.innerHTML += components.chat_user.replace(
+
+
+
+        messages.innerHTML += components.chat_user.replace(//將用戶的問題加入到畫面中
             "{content}",
             question
         );
 
         const answerComponentId = getId();
-        messages.innerHTML += components.chat_bot
+        messages.innerHTML += components.chat_bot//將機器人的回答加入到畫面中
             .replace("{content}", "")
             .replace("{id}", answerComponentId);
 
-        const answerComponent = document.getElementById(answerComponentId);
-        answerComponent.innerHTML = components.thinking;
+        const answerComponent = document.getElementById(answerComponentId);//獲取機器人回答的元素
+        answerComponent.innerHTML = components.thinking;//顯示回覆中
+
 
         if (!question) return;
         const body = {question};
@@ -96,18 +98,19 @@ function handleSubmitQuestion(form) {
         })
             .then(async (res) => {
                 answerComponent.innerHTML = "";
-                const reader = res.body.getReader();
+                const reader = res.body.getReader();//讀取回應的內容
                 const decoder = new TextDecoder();
 
                 let text = "";
                 while (true) {
-                    const { value, done } = await reader.read();
-                    if (done) break;
-                    text += decoder.decode(value, { stream: true });
-                    answerComponent.innerHTML = await markdownToHtml(text);
+                    const { value, done } = await reader.read();//讀取回應的內容
+                    if (done) break;//如果讀取完畢，則跳出循環
+                    text += decoder.decode(value, { stream: true });//將回應的內容轉換為文字
+                    answerComponent.innerHTML = await markdownToHtml(text);//將回應的內容轉換為 HTML
                 }
 
                 btn.innerHTML = `送出`;
+                $messages.scrollTop(messages[0].scrollHeight); // 捲動視窗到最底部
             })
             .catch((e) => {
                 console.error(e);
@@ -115,8 +118,7 @@ function handleSubmitQuestion(form) {
     });
 }
 
-const formSubmitLink = document.getElementById("form-submit-link");
-if (formSubmitLink) handleSubmitIndexing(formSubmitLink);
+const formQuestion = document.getElementById("form-question");//獲取表單元素
+if (formQuestion) handleSubmitQuestion(formQuestion);//如果表單存在，則綁定事件
 
-const formQuestion = document.getElementById("form-question");
-if (formQuestion) handleSubmitQuestion(formQuestion);
+

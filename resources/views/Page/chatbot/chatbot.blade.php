@@ -58,8 +58,8 @@
                             @csrf
                            <input placeholder="輸入傳送訊息!" name="question"class="w-full p-2 rounded-md border border-gray-600 focus:outline-none" />
                             <button id="btn-submit-question" type="submit"
-                            class="bg-black text-white shadow px-3 rounded-md flex items-center">
-                            <span>送出</span></button>
+                            class="bg-black  text-white shadow px-3 rounded-md flex items-center">
+                            送出</button>
 
                         </form>
                     </div>
