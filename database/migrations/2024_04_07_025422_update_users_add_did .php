@@ -10,13 +10,12 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {/*
-        Schema::connection('pgsql')->create('embed_collections', function (Blueprint $table) {
-            $table->uuid("id")->primary();
-            $table->string("name");
-            $table->string("file_name");
-            $table->timestamps();
-        });*/
+    {
+        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->softDeletes(); //加入 deleted_at 欄位
+        }
+        );
     }
 
     /**
@@ -24,6 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('embed_collections');
+        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

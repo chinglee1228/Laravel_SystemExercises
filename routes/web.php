@@ -4,6 +4,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\PineconeController;
 
 /*
 
@@ -26,9 +27,11 @@ Route::middleware([App\Http\Middleware\Authenticate::class])->group(function () 
     //Route::get('/', function () {return view('Page\index');});
     Route::get('/', function () {
         return view('Page.index');
-    })->name('root');
+    })->name('index');
 
-    Route::get('index',[RegisterController::class, 'index'])->name('root');
+    Route::get('index',[RegisterController::class, 'index']);
+    Route::get('test', [PineconeController::class,'checkConnection']);//測試pinecone查詢
+
 });
 
 //did為2才能檢視
@@ -47,7 +50,7 @@ Route::middleware([App\Http\Middleware\PermissionControl::class])->group(functio
     //Route::get('chat',    [ChatbotController::class, 'index'])->name('chatindex');
     Route::get("chat", [ChatbotController::class, 'show'])->name('chat.index');
     Route::post("chat", [ChatbotController::class, 'sendToAIModel'])->name('chat.store');
-    Route::post("chat/getchat", [ChatbotController::class, 'sendToAIModel'])->name('chat.get');
+   // Route::post("chat/getchat", [ChatbotController::class, 'sendToAIModel'])->name('chat.get');
 
 
 });

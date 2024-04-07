@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-
+/*
         Schema::connection('pgsql')->create('embeddings', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->longText('text');
             //$table->foreignIdFor(EmbedCollection::class)->onDelete('cascade');
             $table->timestamps();
         });
-        DB::statement("ALTER TABLE embeddings ADD embedding vector;");
+        DB::statement("ALTER TABLE embeddings ADD embedding vector;");*/
     }
 
     /**

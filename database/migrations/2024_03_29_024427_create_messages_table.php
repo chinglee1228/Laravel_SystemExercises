@@ -11,7 +11,7 @@ return new class extends Migration
      */
     //chatbot對話紀錄
     public function up(): void
-    {/*
+    {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             //$table->foreignIdFor(Chat::class)->onDelete('cascade');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string("role");
             $table->text("content");
             $table->timestamps();
-        });*/
+        });
     }
 
     /**

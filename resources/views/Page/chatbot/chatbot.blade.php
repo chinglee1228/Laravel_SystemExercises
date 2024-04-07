@@ -33,8 +33,10 @@
                         <div class="pb-10 space-y-4 h-[60vh] overflow-scroll" id="messages">
 
                             {{--對話框--}}
+                            {{--
                             @foreach($messages as $message)
-                            @if($message->role == "user"){{--判斷訊息由誰傳送--}}
+
+                            @if($message->role == "user")
                             <div class="ml-16 flex justify-end">
                                 <div class="bg-gray-100 p-3 rounded-md">
                                     <p class="font-medium text-blue-500 text-right text-sm">{{Auth::user()->name}}</p>
@@ -49,7 +51,7 @@
                                 <p class="text-gray-800">{{$message->content}}</p>
                             </div>
                             @endif
-                            @endforeach
+                            @endforeach--}}
                         </div>
 
                          <form class="flex gap-2 pt-2" id="form-question">
