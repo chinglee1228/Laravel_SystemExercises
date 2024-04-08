@@ -34,7 +34,7 @@ class PineconeService
     public function GetRelevantContent($question)
     {
         //$question = "物品遺失";//搜尋測試
-        //$question = $this->query->StrealineQuestion($question);//將使用者問題精簡化
+        //$question = $this->query->StreamlineQuestion($question);//將使用者問題精簡化
         $queryVectors = $this->query->getQueryEmbedding($question);//將問題轉換成向量
         $content = $this->queryPinecone($queryVectors);//查詢pinecone
         $text = $this->ExtractText($content);//提取text
