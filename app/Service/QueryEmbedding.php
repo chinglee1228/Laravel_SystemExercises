@@ -24,7 +24,7 @@ class QueryEmbedding
     }
 
     //產生精簡返回pinecone查詢
-    public function StrealineQuestion($question)
+    public function StreamlineQuestion($question)
     {
         $condensed_question_template = "
         鑑於以下對話和後續問題，將後續問題改寫為一個獨立的問題。
@@ -37,14 +37,9 @@ class QueryEmbedding
         $system_prompt = $condensed_question_template;
         $StrealineQuestion = $this->askQuestionStreamed($system_prompt,$question);//產生精簡返回pinecone查詢
 
-        foreach ($StrealineQuestion as $response) {
-            $message = $response->choices[0]->delta->content;
 
-            //檢查連接是否中斷
 
-            }
-        return $message;
-        //return $StrealineQuestion;
+        return $StrealineQuestion;
     }
     public function askQuestion($context, $question)
     {
@@ -56,16 +51,8 @@ class QueryEmbedding
         不要試圖編造答案。
         如果問題與遊戲或聊天歷史記錄無關，請禮貌地回答您只回答與遊戲相關的問題。
        ----------------
-        <context>
         {context}
-        </context>
-
-        <chat_history>
-            {chat_history}
-        </chat_history>
-
-        Question: {question}
-        Helpful answer in markdown:";
+        ";
         // 替換上下文
         $system_prompt = str_replace("{context}", $context, $system_QA_template);
         $Question = $this->askQuestionStreamed($system_prompt,$question);//返回回答
@@ -75,6 +62,34 @@ class QueryEmbedding
     }
     public function askQuestionStreamed($system_prompt, $question)
     {
+
+        try{
+            $responseStream=OpenAI::chat()->createStreamed([
+                'model' => 'gpt-4', // 使用的模型
+                'temperature' => 0.8,
+                'max_tokens' => 2048,
+                'top_p' => 0.1,//一个从 0 到 1 的浮点数，越低越保守，越高越創造性高
+                'n' => 1,
+                'stream' => false, //如果设置为真，则以流的形式逐渐返回结果
+                'logprobs' => null,//返回模型关于其预测的特定令牌的概率分数
+                'stop' => ["\n", "END"], // 可以定义多个结束符号
+                'presence_penalty' => 0, //推动模型生成出现次数比较少的话题的值。
+                'frequency_penalty' => 0, //减少模型重复相同内容的倾向的值。
+                'messages' => [
+                    ['role' => 'system', 'content' => $system_prompt],
+                    //['role' => 'system', 'content' => $system_prompt2], // 精簡版问题提示
+                    ['role' => 'user', 'content' => $question],
+                ],
+            ]);
+
+
+            return $responseStream;
+        }catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+
+
+        }
+/*
         return OpenAI::chat()->createStreamed([
             'model' => 'gpt-4', // 使用的模型
             'temperature' => 0.8,
@@ -91,7 +106,7 @@ class QueryEmbedding
                 //['role' => 'system', 'content' => $system_prompt2], // 精簡版问题提示
                 ['role' => 'user', 'content' => $question],
             ],
-        ]);
+        ]);*/
     }
 
 /*
