@@ -1,4 +1,5 @@
 import './bootstrap';
+//import './chat';
 // resources/js/app.js 或者其他主 JavaScript 文件
 
 const components = {
@@ -7,7 +8,6 @@ const components = {
     <span style="background-color: #fff;"></span>
     <span style="background-color: #fff;"></span>
     </span>
-
     `,
     thinking:
         `<span class="animate-pulse text-gray-600 text-sm">回覆中...</span>`,
@@ -58,15 +58,19 @@ async function markdownToHtml(markdownString) {//將 markdown 轉換為 HTML
 }
 
 function handleSubmitQuestion(form) {
-
     form.addEventListener("submit", (e) => {
         e.preventDefault();//阻止表單默認提交
         const question = e.target.question.value;//提取輸入框的值
+        const inputField = document.getElementById('input-question');//取得輸入框
         const token = e.target._token.value;//提取 CSRF token
-        const btn = document.getElementById("btn-submit-question");
-        const messages = document.getElementById("messages");
+        const btn = document.getElementById("btn-submit-question");//取得送出按鈕
+        //const messages = document.getElementById("messages");
+        const messages = document.querySelector('#messages'); // 取得畫面中的訊息區塊
         btn.innerHTML = components.loadingDots;//顯示發送中
+
         e.target.question.value = "";//清空輸入框
+
+
 
 
 
@@ -80,6 +84,9 @@ function handleSubmitQuestion(form) {
         messages.innerHTML += components.chat_bot//將機器人的回答加入到畫面中
             .replace("{content}", "")
             .replace("{id}", answerComponentId);
+            inputField.placeholder = "等待客服回覆中......";
+            inputField.disabled = true;
+            btn.disabled = true;
 
         const answerComponent = document.getElementById(answerComponentId);//獲取機器人回答的元素
         answerComponent.innerHTML = components.thinking;//顯示回覆中
@@ -107,10 +114,12 @@ function handleSubmitQuestion(form) {
                     if (done) break;//如果讀取完畢，則跳出循環
                     text += decoder.decode(value, { stream: true });//將回應的內容轉換為文字
                     answerComponent.innerHTML = await markdownToHtml(text);//將回應的內容轉換為 HTML
+                    messages.scrollTop = messages.scrollHeight; // 捲動視窗到最底部
                 }
-
+                inputField.placeholder = "輸入傳送訊息!";
+                inputField.disabled = false;
+                btn.disabled = false;
                 btn.innerHTML = `送出`;
-                $messages.scrollTop(messages[0].scrollHeight); // 捲動視窗到最底部
             })
             .catch((e) => {
                 console.error(e);
@@ -122,3 +131,21 @@ const formQuestion = document.getElementById("form-question");//獲取表單元�
 if (formQuestion) handleSubmitQuestion(formQuestion);//如果表單存在，則綁定事件
 
 
+
+
+
+window.onload = function() {
+    messages.innerHTML = document.getElementById('message');//取得畫面中的訊息區塊
+
+    // 加入歡迎訊息
+    sendBotMessage('哈囉！請問您想要了解那些遊戲內容?');
+};
+
+// 模擬機器人發訊息的函數
+function sendBotMessage(message) {
+    const answerComponentId = getId();
+    messages.innerHTML += components.chat_bot//將機器人的回答加入到畫面中
+    .replace("{content}", message)
+    .replace("{id}", answerComponentId);
+
+}

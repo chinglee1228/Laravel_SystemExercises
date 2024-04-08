@@ -69,24 +69,28 @@ class ChatbotController extends Controller
 
     public function sendToAIModel(Request $request)
     {
+        set_time_limit(0);// 设置脚本无超时限制
         return response()->stream(function () use ($request) {
             try{
                 $question = $request->question;
-
-                //$context = '這個人是一個男生，我今年20歲，身高180，是台北人，還在是學生';//測試當作查詢到的資料
-                //$queryVectors = $this->query->getQueryEmbedding($question);//將問題轉換成向量
-                //$queryPinecone= $this->queryPinecone->queryPinecone($queryVectors);//查詢pinecone
-                $context = $this->pinecone->GetRelevantContent($question)?? [];//提取text
-                $stream = $this->query->askQuestionStreamed($context, $question);//使用查詢到的資料進行問答
+                $context = $this->pinecone->GetRelevantContent($question)?? [];//查詢pinecone取得相關內容資料
+                $stream = $this->query->askQuestion($context, $question);//使用查詢到的資料進行問答
+                //$stream = $this->query->StrealineQuestion($question);//返回精簡問題
 
                 foreach ($stream as $response) {
                     $message = $response->choices[0]->delta->content;
+                    $formatted_message = nl2br(trim($message));//將回傳的訊息格式化
+
                     //return $message;
                     //檢查連接是否中斷
                     if (connection_aborted()) {
                         break;
                         }
-                    ServerEvent::send($message, "");//丟給前端
+                          // 丟給前端，並檢查訊息格式正確性，例如冒號和段落
+                    if (strpos($formatted_message, '：') !== false) {
+                        $formatted_message = preg_replace('/([^：\n]+)：/', "<strong>$1：</strong>", $formatted_message);
+                        }
+                    ServerEvent::send($formatted_message, "");//丟給前端
                     }
 
                 } catch (Exception $e) {
@@ -96,8 +100,8 @@ class ChatbotController extends Controller
                 }, 200, [
                     'Cache-Control' => 'no-cache',
                     'Connection' => 'keep-alive',
-                    'X-Accel-Buffering' => 'no',
-                    'Content-Type' => 'text/event-stream',
+                    'X-Accel-Buffering' => 'no',//確保不會由於nginx緩衝而延遲訊息
+                    'Content-Type' => 'text/event-stream',// 正確設置SSE所需的herder
                 ]);
             }
         }
