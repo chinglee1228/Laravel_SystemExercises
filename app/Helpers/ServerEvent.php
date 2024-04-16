@@ -24,7 +24,7 @@ class ServerEvent
             if (!@flush()) {
                 // Handle the error appropriately
                 //無法刷新系統寫入緩衝區
-                error_log('Failed to flush system write buffers');
+                error_log('//無法刷新系統寫入緩衝區');
                 break;
             }
         }

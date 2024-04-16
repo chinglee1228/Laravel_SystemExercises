@@ -82,7 +82,8 @@ class ChatbotController extends Controller
                 foreach ($stream as $response) {
                     $context= $response->choices[0]->delta->content;
                     $message .= $context; // 将格式化后的内容追加到整体消息中
-                    $formatted_message = nl2br(trim($message));//將單條的訊息格式化
+                    $formatted_message = nl2br(trim($context));//將單條的訊息格式化
+
                     if (strpos($formatted_message, '：') !== false) {//檢查是否有冒號
                         //將冒號前的字加上粗體
                         $formatted_message = preg_replace('/([^：\n]+)：/', "<strong>$1：</strong>", $formatted_message);
@@ -93,7 +94,7 @@ class ChatbotController extends Controller
                         break;
                         }
 
-                    ServerEvent::send($context, "");//丟給前端
+                    ServerEvent::send($formatted_message, "");//丟給前端
                     }
 
                     Message::insert([[
