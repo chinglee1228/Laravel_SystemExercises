@@ -1,0 +1,61 @@
+{
+  "_index-Ch_qCilz.js": {
+    "file": "assets/index-Ch_qCilz.js",
+    "name": "index"
+  },
+  "_index-DCp-5C0O.js": {
+    "file": "assets/index-DCp-5C0O.js",
+    "name": "index"
+  },
+  "node_modules/rehype-stringify/index.js": {
+    "file": "assets/index-Brq8D8Dv.js",
+    "name": "index",
+    "src": "node_modules/rehype-stringify/index.js",
+    "isDynamicEntry": true
+  },
+  "node_modules/remark-parse/index.js": {
+    "file": "assets/index-3B-xqTNw.js",
+    "name": "index",
+    "src": "node_modules/remark-parse/index.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_index-DCp-5C0O.js",
+      "_index-Ch_qCilz.js"
+    ]
+  },
+  "node_modules/remark-rehype/index.js": {
+    "file": "assets/index-DlSCJL4M.js",
+    "name": "index",
+    "src": "node_modules/remark-rehype/index.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_index-DCp-5C0O.js"
+    ]
+  },
+  "node_modules/unified/index.js": {
+    "file": "assets/index-ezDlk4BH.js",
+    "name": "index",
+    "src": "node_modules/unified/index.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_index-Ch_qCilz.js"
+    ]
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-CvJJOtyU.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DrCuM2tT.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "node_modules/unified/index.js",
+      "node_modules/remark-parse/index.js",
+      "node_modules/remark-rehype/index.js",
+      "node_modules/rehype-stringify/index.js"
+    ]
+  }
+}
